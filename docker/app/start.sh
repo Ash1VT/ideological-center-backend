@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/bin/bash
 
 while ! nc -z "$PG_HOST" "$PG_PORT";
   do sleep 1;
