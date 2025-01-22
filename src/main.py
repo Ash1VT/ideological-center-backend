@@ -10,7 +10,7 @@ app = FastAPI(title="Resource Center", lifespan=lifespan)
 api_router = APIRouter(prefix="/api/v1")
 settings = get_app_settings()
 
-register_cors(app, ["http://localhost:3000"])
+register_cors(app, settings.cors_origins)
 register_routes(app, api_router)
 
 

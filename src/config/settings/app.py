@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, List
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -10,6 +10,7 @@ from setup.sqlalchemy.uow import get_sqlalchemy_uow
 class AppSettings(BaseSettings):
     secret_key: str
     firebase_storage_bucket: str
+    cors_origins: List[str]
 
     get_uow: Callable[[], GenericUnitOfWork] = get_sqlalchemy_uow
 
