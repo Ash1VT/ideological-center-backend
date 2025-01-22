@@ -1,0 +1,55 @@
+version: '3.6'
+name: 'ideological'
+
+services:
+    db:
+        image: postgres:15.4-alpine
+        container_name: ideological-postgres
+        ports:
+          - "5433:5432"
+        volumes:
+          - ~/apps/postgres/menu:/var/lib/postgresql/data
+        environment:
+          - PGPORT=5433
+          - POSTGRES_USER=${PG_USER}
+          - POSTGRES_PASSWORD=${PG_PASSWORD}
+          - POSTGRES_DB=ideological
+        expose:
+          - "5433"
+        networks:
+          - ideological_network
+    app:
+        build:
+          context: ../
+          dockerfile: ./docker/app/Dockerfile
+        container_name: ideological-app
+        ports:
+          - "8000:8000"
+        environment:
+          - CONFIGURATION=${CONFIGURATION}
+          - SECRET_KEY=${SECRET_KEY}
+          - WEB_APP_HOST=${WEB_APP_HOST}
+          - WEB_APP_PORT=${WEB_APP_PORT}
+          - PG_HOST=db
+          - PG_PORT=5433
+          - PG_DATABASE=menu
+          - PG_USER=${PG_USER}
+          - PG_PASSWORD=${PG_PASSWORD}
+          - FIREBASE_STORAGE_BUCKET=${FIREBASE_STORAGE_BUCKET}
+          - EMAIL_HOST=${EMAIL_HOST}
+          - EMAIL_HOST_USER=${EMAIL_HOST_USER}
+          - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
+          - EMAIL_PORT=${EMAIL_PORT}
+          - EMAIL_USE_SSL=${EMAIL_USE_SSL}
+          - EMAIL_USE_TLS=${EMAIL_USE_TLS}
+          - EMAIL_FROM=${EMAIL_FROM}
+          - EMAIL_FROM_NAME=${EMAIL_FROM_NAME}
+        volumes:
+          - ~/apps/ideological:/app
+        depends_on:
+          - db
+        networks:
+          - ideological_network
+
+networks:
+  ideological_network:
