@@ -1,4 +1,3 @@
-version: '3.6'
 name: 'ideological'
 
 services:
@@ -8,12 +7,12 @@ services:
         ports:
           - "5433:5432"
         volumes:
-          - ~/apps/postgres/menu:/var/lib/postgresql/data
+          - ~/apps/postgres/ideological:/var/lib/postgresql/data
         environment:
           - PGPORT=5433
           - POSTGRES_USER=${PG_USER}
           - POSTGRES_PASSWORD=${PG_PASSWORD}
-          - POSTGRES_DB=ideological
+          - POSTGRES_DB=ideological_center
         expose:
           - "5433"
         networks:
@@ -33,7 +32,7 @@ services:
           - CORS_ORIGINS=${CORS_ORIGINS}
           - PG_HOST=db
           - PG_PORT=5433
-          - PG_DATABASE=menu
+          - PG_DATABASE=ideological_center
           - PG_USER=${PG_USER}
           - PG_PASSWORD=${PG_PASSWORD}
           - FIREBASE_STORAGE_BUCKET=${FIREBASE_STORAGE_BUCKET}
@@ -45,8 +44,6 @@ services:
           - EMAIL_USE_TLS=${EMAIL_USE_TLS}
           - EMAIL_FROM=${EMAIL_FROM}
           - EMAIL_FROM_NAME=${EMAIL_FROM_NAME}
-        volumes:
-          - ~/apps/ideological:/app
         depends_on:
           - db
         networks:
