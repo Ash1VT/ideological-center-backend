@@ -6,12 +6,13 @@ from core.dependencies.uow.sqlalchemy import get_uow, get_uow_with_commit
 from core.errors.handler import handle_app_errors
 from core.pagination.schema import PaginatedOut
 from core.uow.generic import GenericUnitOfWork
-from db.sqlalchemy.models import EventApplicationStatus
+from db.sqlalchemy.models import EventApplicationStatus, User
 from modules.events.dependencies.services import get_event_service, get_event_application_service
 from modules.events.schemas import EventRetrieveOutSchema, EventCreateOutSchema, EventCreateInSchema, \
     EventUpdateInSchema, EventUpdateOutSchema, EventApplicationRetrieveOutSchema, EventApplicationCreateOutSchema, \
     EventApplicationCreateInSchema
 from modules.events.services import EventService, EventApplicationService
+from modules.users.auth import fastapi_users
 
 events_router = APIRouter(prefix="/events", tags=["events"])
 
@@ -36,6 +37,7 @@ async def retrieve(id: int,
 @events_router.post("/", response_model=EventCreateOutSchema)
 @handle_app_errors
 async def create(event: EventCreateInSchema,
+                 admin: User = Depends(fastapi_users.current_user(superuser=True)),
                  service: EventService = Depends(get_event_service),
                  uow: GenericUnitOfWork = Depends(get_uow_with_commit)):
     return await service.create(item=event, uow=uow)
@@ -45,6 +47,7 @@ async def create(event: EventCreateInSchema,
 @handle_app_errors
 async def update(id: int,
                  event: EventUpdateInSchema,
+                 admin: User = Depends(fastapi_users.current_user(superuser=True)),
                  service: EventService = Depends(get_event_service),
                  uow: GenericUnitOfWork = Depends(get_uow_with_commit)):
     return await service.update(id=id, item=event, uow=uow)
@@ -53,6 +56,7 @@ async def update(id: int,
 @events_router.delete("/{id}")
 @handle_app_errors
 async def delete(id: int,
+                 admin: User = Depends(fastapi_users.current_user(superuser=True)),
                  service: EventService = Depends(get_event_service),
                  uow: GenericUnitOfWork = Depends(get_uow_with_commit)):
     await service.delete(id=id, uow=uow)
@@ -63,6 +67,7 @@ async def delete(id: int,
 @handle_app_errors
 async def upload_image(id: int,
                        image: UploadFile = File(...),
+                       admin: User = Depends(fastapi_users.current_user(superuser=True)),
                        service: EventService = Depends(get_event_service),
                        uow: GenericUnitOfWork = Depends(get_uow_with_commit)):
     if not image.content_type.startswith('image'):

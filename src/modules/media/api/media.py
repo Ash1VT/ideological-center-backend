@@ -6,11 +6,12 @@ from core.dependencies.uow.sqlalchemy import get_uow, get_uow_with_commit
 from core.errors.handler import handle_app_errors
 from core.pagination.schema import PaginatedOut
 from core.uow.generic import GenericUnitOfWork
-from db.sqlalchemy.models import MediaType
+from db.sqlalchemy.models import MediaType, User
 from modules.media.dependencies.services import get_media_service, get_media_photo_service
 from modules.media.schemas import MediaRetrieveOutSchema, MediaCreateInSchema, MediaCreateOutSchema, \
     MediaUpdateInSchema, MediaUpdateOutSchema, MediaPhotoRetrieveOutSchema
 from modules.media.services import MediaService, MediaPhotoService
+from modules.users.auth import fastapi_users
 
 media_router = APIRouter(prefix="/media", tags=["media"])
 
@@ -43,6 +44,7 @@ async def retrieve(id: int,
 @media_router.post("/", response_model=MediaCreateOutSchema)
 @handle_app_errors
 async def create(media: MediaCreateInSchema,
+                 admin: User = Depends(fastapi_users.current_user(superuser=True)),
                  service: MediaService = Depends(get_media_service),
                  uow: GenericUnitOfWork = Depends(get_uow_with_commit)):
     return await service.create(item=media, uow=uow)
@@ -52,6 +54,7 @@ async def create(media: MediaCreateInSchema,
 @handle_app_errors
 async def update(id: int,
                  media: MediaUpdateInSchema,
+                 admin: User = Depends(fastapi_users.current_user(superuser=True)),
                  service: MediaService = Depends(get_media_service),
                  uow: GenericUnitOfWork = Depends(get_uow_with_commit)):
     return await service.update(id=id, item=media, uow=uow)
@@ -60,6 +63,7 @@ async def update(id: int,
 @media_router.delete("/{id}")
 @handle_app_errors
 async def delete(id: int,
+                 admin: User = Depends(fastapi_users.current_user(superuser=True)),
                  service: MediaService = Depends(get_media_service),
                  uow: GenericUnitOfWork = Depends(get_uow_with_commit)):
     await service.delete(id=id, uow=uow)
@@ -70,6 +74,7 @@ async def delete(id: int,
 @handle_app_errors
 async def upload_image(id: int,
                        image: UploadFile = File(...),
+                       admin: User = Depends(fastapi_users.current_user(superuser=True)),
                        service: MediaService = Depends(get_media_service),
                        uow: GenericUnitOfWork = Depends(get_uow_with_commit)):
     if not image.content_type.startswith('image'):
@@ -82,6 +87,7 @@ async def upload_image(id: int,
 @handle_app_errors
 async def upload_file(id: int,
                       file: UploadFile = File(...),
+                      admin: User = Depends(fastapi_users.current_user(superuser=True)),
                       service: MediaService = Depends(get_media_service),
                       uow: GenericUnitOfWork = Depends(get_uow_with_commit)):
     return await service.upload_file(id=id, file=file, uow=uow)
@@ -91,6 +97,7 @@ async def upload_file(id: int,
 @handle_app_errors
 async def create_photo(media_id: int,
                        image: UploadFile = File(...),
+                       admin: User = Depends(fastapi_users.current_user(superuser=True)),
                        service: MediaPhotoService = Depends(get_media_photo_service),
                        uow: GenericUnitOfWork = Depends(get_uow_with_commit)):
     if not image.content_type.startswith('image'):
@@ -102,6 +109,7 @@ async def create_photo(media_id: int,
 @media_router.delete("/photos/{photo_id}")
 @handle_app_errors
 async def delete_photo(photo_id: int,
+                       admin: User = Depends(fastapi_users.current_user(superuser=True)),
                        service: MediaPhotoService = Depends(get_media_photo_service),
                        uow: GenericUnitOfWork = Depends(get_uow_with_commit)):
     await service.delete(id=photo_id, uow=uow)

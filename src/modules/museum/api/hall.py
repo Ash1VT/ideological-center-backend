@@ -6,11 +6,13 @@ from core.dependencies.uow.sqlalchemy import get_uow, get_uow_with_commit
 from core.errors.handler import handle_app_errors
 from core.pagination.schema import PaginatedOut
 from core.uow.generic import GenericUnitOfWork
+from db.sqlalchemy.models import User
 from modules.museum.dependencies.services import get_museum_hall_service, get_museum_section_service
 from modules.museum.schemas import MuseumHallRetrieveOutSchema, MuseumHallCreateOutSchema, MuseumHallUpdateOutSchema, \
     MuseumHallCreateInSchema, MuseumHallUpdateInSchema, MuseumSectionCreateOutSchema, MuseumSectionCreateInSchema, \
     MuseumSectionRetrieveOutSchema
 from modules.museum.services import MuseumHallService, MuseumSectionService
+from modules.users.auth import fastapi_users
 
 museum_hall_router = APIRouter(prefix="/museum/halls", tags=["museum_halls"])
 
@@ -37,6 +39,7 @@ async def retrieve(id: int,
 @museum_hall_router.post("/", response_model=MuseumHallCreateOutSchema)
 @handle_app_errors
 async def create(hall: MuseumHallCreateInSchema,
+                 admin: User = Depends(fastapi_users.current_user(superuser=True)),
                  service: MuseumHallService = Depends(get_museum_hall_service),
                  uow: GenericUnitOfWork = Depends(get_uow_with_commit)):
     return await service.create(item=hall, uow=uow)
@@ -46,6 +49,7 @@ async def create(hall: MuseumHallCreateInSchema,
 @handle_app_errors
 async def update(id: int,
                  hall: MuseumHallUpdateInSchema,
+                 admin: User = Depends(fastapi_users.current_user(superuser=True)),
                  service: MuseumHallService = Depends(get_museum_hall_service),
                  uow: GenericUnitOfWork = Depends(get_uow_with_commit)):
     return await service.update(id=id, item=hall, uow=uow)
@@ -54,6 +58,7 @@ async def update(id: int,
 @museum_hall_router.delete("/{id}")
 @handle_app_errors
 async def delete(id: int,
+                 admin: User = Depends(fastapi_users.current_user(superuser=True)),
                  service: MuseumHallService = Depends(get_museum_hall_service),
                  uow: GenericUnitOfWork = Depends(get_uow_with_commit)):
     await service.delete(id=id, uow=uow)
@@ -74,6 +79,7 @@ async def retrieve_all_sections(hall_id: int,
 @handle_app_errors
 async def create_section(hall_id: int,
                          section: MuseumSectionCreateInSchema,
+                         admin: User = Depends(fastapi_users.current_user(superuser=True)),
                          service: MuseumSectionService = Depends(get_museum_section_service),
                          uow: GenericUnitOfWork = Depends(get_uow_with_commit)):
     return await service.create(hall_id=hall_id, item=section, uow=uow)
@@ -82,6 +88,7 @@ async def create_section(hall_id: int,
 @museum_hall_router.put("/{id}/image/upload", response_model=MuseumHallUpdateOutSchema)
 @handle_app_errors
 async def upload_image(id: int,
+                       admin: User = Depends(fastapi_users.current_user(superuser=True)),
                        image: UploadFile = File(...),
                        service: MuseumHallService = Depends(get_museum_hall_service),
                        uow: GenericUnitOfWork = Depends(get_uow_with_commit)):
