@@ -70,7 +70,7 @@ class SQLAlchemyMediaCategoryRepository(SQLAlchemyRepository[MediaCategory], IMe
         stmt = super()._get_list_stmt()
 
         if types:
-            stmt = stmt.where(Media.type.in_([MediaType(t) for t in types]))
+            stmt = stmt.where(MediaCategory.type.in_([MediaType(t) for t in types]))
 
         paginator = SQLAlchemyPaginator(session=self._session,
                                         query=stmt,
