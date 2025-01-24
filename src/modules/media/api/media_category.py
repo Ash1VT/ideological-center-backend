@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 
 from fastapi import APIRouter, Query, Depends
 
@@ -6,7 +6,7 @@ from core.dependencies.uow.sqlalchemy import get_uow, get_uow_with_commit
 from core.errors.handler import handle_app_errors
 from core.pagination.schema import PaginatedOut
 from core.uow.generic import GenericUnitOfWork
-from db.sqlalchemy.models import User
+from db.sqlalchemy.models import User, MediaType
 from modules.media.dependencies.services import get_media_category_service
 from modules.media.schemas import MediaCategoryRetrieveOutSchema, MediaCategoryCreateOutSchema, \
     MediaCategoryUpdateOutSchema, MediaCategoryCreateInSchema, MediaCategoryUpdateInSchema
@@ -20,9 +20,10 @@ media_category_router = APIRouter(prefix="/media/categories", tags=["media_categ
 @handle_app_errors
 async def retrieve_all(page: Optional[int] = Query(None),
                        per_page: Optional[int] = Query(None),
+                       types: Optional[List[MediaType]] = Query(None),
                        service: MediaCategoryService = Depends(get_media_category_service),
                        uow: GenericUnitOfWork = Depends(get_uow)):
-    return await service.retrieve_all(page=page, per_page=per_page, uow=uow)
+    return await service.retrieve_all(page=page, per_page=per_page, types=types, uow=uow)
 
 
 @media_category_router.get("/{id}", response_model=MediaCategoryRetrieveOutSchema)

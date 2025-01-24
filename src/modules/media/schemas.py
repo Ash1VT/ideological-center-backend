@@ -52,12 +52,11 @@ class MediaBaseSchema(BaseModel):
     name: str = Field(max_length=255, examples=["Lunch", "Dinner"])
     description: Optional[str] = Field(max_length=255, examples=["Lunch", "Dinner"])
     type: MediaType = Field(examples=[MediaType.METHOD_DOC,
-                                            MediaType.NORM_DOC,
-                                            MediaType.STUDY_MATERIAL,
-                                            MediaType.PHOTO,
-                                            MediaType.VIDEO,
-                                            MediaType.PRESENTATION])
-    category_id: Optional[int] = Field(ge=0, examples=[1, 2, 3, 4, 5], default=None)
+                                      MediaType.NORM_DOC,
+                                      MediaType.STUDY_MATERIAL,
+                                      MediaType.PHOTO,
+                                      MediaType.VIDEO,
+                                      MediaType.PRESENTATION])
 
 
 class MediaRetrieveOutSchema(MediaBaseSchema):
@@ -65,6 +64,7 @@ class MediaRetrieveOutSchema(MediaBaseSchema):
     url: Optional[str] = Field(max_length=255, examples=["https://example.com/image.jpg"])
     image_url: Optional[str] = Field(max_length=255, examples=["https://example.com/image.jpg"])
     media_photos: Optional[List[MediaPhotoRetrieveOutSchema]]
+    category_id: Optional[int] = Field(ge=0, examples=[1, 2, 3, 4, 5], default=None)
 
     model_config = {
         "from_attributes": True,
@@ -81,6 +81,7 @@ class MediaCreateOutSchema(MediaBaseSchema):
     url: Optional[str] = Field(max_length=255, examples=["https://example.com/image.jpg"])
     image_url: Optional[str] = Field(max_length=255, examples=["https://example.com/image.jpg"])
     # media_photos: Optional[List[MediaPhotoCreateOutSchema]]
+    category_id: Optional[int] = Field(ge=0, examples=[1, 2, 3, 4, 5], default=None)
 
     model_config = {
         "from_attributes": True,
@@ -97,6 +98,7 @@ class MediaUpdateOutSchema(MediaBaseSchema):
     url: Optional[str] = Field(max_length=255, examples=["https://example.com/image.jpg"])
     image_url: Optional[str] = Field(max_length=255, examples=["https://example.com/image.jpg"])
     # media_photos: Optional[List[MediaPhotoRetrieveOutSchema]]
+    category_id: Optional[int] = Field(ge=0, examples=[1, 2, 3, 4, 5], default=None)
 
     model_config = {
         "from_attributes": True,
@@ -107,6 +109,12 @@ class MediaUpdateOutSchema(MediaBaseSchema):
 # MEDIA CATEGORY
 class MediaCategoryBaseSchema(BaseModel):
     name: str = Field(max_length=255, examples=["Lunch", "Dinner"])
+    type: MediaType = Field(examples=[MediaType.METHOD_DOC,
+                                      MediaType.NORM_DOC,
+                                      MediaType.STUDY_MATERIAL,
+                                      MediaType.PHOTO,
+                                      MediaType.VIDEO,
+                                      MediaType.PRESENTATION])
 
 
 class MediaCategoryRetrieveOutSchema(MediaCategoryBaseSchema):

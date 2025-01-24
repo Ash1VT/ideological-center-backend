@@ -50,6 +50,7 @@ class MediaCategory(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String(255), nullable=False)
+    type = Column(Enum(MediaType), nullable=False)
 
     media = relationship("Media",
                          cascade="all, delete",

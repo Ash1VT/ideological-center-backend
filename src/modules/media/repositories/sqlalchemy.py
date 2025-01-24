@@ -63,6 +63,24 @@ class SQLAlchemyMediaRepository(SQLAlchemyRepository[Event], IMediaRepository):
 class SQLAlchemyMediaCategoryRepository(SQLAlchemyRepository[MediaCategory], IMediaCategoryRepository):
     model = MediaCategory
 
+    async def retrieve_all(self,
+                           page: int,
+                           per_page: int,
+                           types: Optional[List[int]] = None) -> PaginatedModel[Media]:
+        stmt = super()._get_list_stmt()
+
+        if types:
+            stmt = stmt.where(Media.type.in_([MediaType(t) for t in types]))
+
+        paginator = SQLAlchemyPaginator(session=self._session,
+                                        query=stmt,
+                                        page=page,
+                                        per_page=per_page)
+
+        logger.debug(f"Retrieved page {page} of {per_page} of {self.model.__name__}")
+
+        return await paginator.get_response()
+
 
 class SQLAlchemyMediaPhotoRepository(SQLAlchemyRepository[MediaPhoto], IMediaPhotoRepository):
     model = MediaPhoto

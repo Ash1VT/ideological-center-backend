@@ -62,21 +62,21 @@ class MediaService(RetrieveMixin[Media, MediaRetrieveOutSchema],
     #                                                 include_photos=True)
 
     async def create_instance(self, item: MediaCreateInSchema, uow: GenericUnitOfWork, **kwargs) -> Media:
-        if item.category_id:
-            media_category = await uow.media_category.retrieve(id=item.category_id)
-
-            if not media_category:
-                raise MediaCategoryNotFoundError(id=item.category_id)
+        # if item.category_id:
+        #     media_category = await uow.media_category.retrieve(id=item.category_id)
+        #
+        #     if not media_category:
+        #         raise MediaCategoryNotFoundError(id=item.category_id)
 
         data = item.model_dump()
         return await uow.media.create(data=data)
 
     async def update_instance(self, id: int, item: MediaUpdateInSchema, uow: GenericUnitOfWork, **kwargs) -> Media:
-        if item.category_id:
-            media_category = await uow.media_category.retrieve(id=item.category_id)
-
-            if not media_category:
-                raise MediaCategoryNotFoundError(id=item.category_id)
+        # if item.category_id:
+        #     media_category = await uow.media_category.retrieve(id=item.category_id)
+        #
+        #     if not media_category:
+        #         raise MediaCategoryNotFoundError(id=item.category_id)
 
         data = item.model_dump()
         return await uow.media.update(id=id, data=data)
@@ -136,7 +136,7 @@ class MediaService(RetrieveMixin[Media, MediaRetrieveOutSchema],
 
 
 class MediaCategoryService(RetrieveMixin[MediaCategory, MediaCategoryRetrieveOutSchema],
-                           RetrieveAllMixin[MediaCategory, MediaCategoryRetrieveOutSchema],
+                           # RetrieveAllMixin[MediaCategory, MediaCategoryRetrieveOutSchema],
                            CreateMixin[MediaCategory, MediaCategoryCreateInSchema, MediaCategoryCreateOutSchema],
                            UpdateMixin[MediaCategory, MediaCategoryUpdateInSchema, MediaCategoryUpdateOutSchema],
                            DeleteMixin[MediaCategory]):
@@ -154,10 +154,12 @@ class MediaCategoryService(RetrieveMixin[MediaCategory, MediaCategoryRetrieveOut
         return instance
 
     async def retrieve_all_instances(self,
-                                     uow: GenericUnitOfWork,
                                      page: int,
-                                     per_page: int, **kwargs) -> List[MediaCategory]:
-        return await uow.media_category.retrieve_all(page=page, per_page=per_page)
+                                     per_page: int,
+                                     uow: GenericUnitOfWork,
+                                     types: Optional[List[int]] = None,
+                                     **kwargs) -> PaginatedModel[MediaCategory]:
+        return await uow.media_category.retrieve_all(page=page, per_page=per_page, types=types)
 
     async def create_instance(self, item: MediaCategoryCreateInSchema, uow: GenericUnitOfWork,
                               **kwargs) -> MediaCategory:
@@ -176,6 +178,14 @@ class MediaCategoryService(RetrieveMixin[MediaCategory, MediaCategoryRetrieveOut
             raise MediaCategoryNotFoundError(id=id)
 
         await uow.media_category.delete(id=id)
+
+    async def retrieve_all(self, page: int,
+                           per_page: int,
+                           uow: GenericUnitOfWork,
+                           types: Optional[List[int]] = None) -> PaginatedOut[MediaCategoryRetrieveOutSchema]:
+        paginated_model = await self.retrieve_all_instances(page=page, per_page=per_page, uow=uow, types=types)
+
+        return self.schema_paginated_out.model_validate(asdict(paginated_model))
 
     async def add_media_to_category(self, category_id: int, media_id: int, uow: GenericUnitOfWork):
         category_instance = await uow.media_category.retrieve(id=category_id)

@@ -32,7 +32,7 @@ class IMediaRepository(ICreateMixin[Media],
 
 
 class IMediaCategoryRepository(IRetrieveMixin[MediaCategory],
-                               IRetrieveAllMixin[MediaCategory],
+                               # IRetrieveAllMixin[MediaCategory],
                                ICreateMixin[MediaCategory],
                                IUpdateMixin[MediaCategory],
                                IDeleteMixin,
@@ -41,7 +41,12 @@ class IMediaCategoryRepository(IRetrieveMixin[MediaCategory],
     Interface for media category repository.
     """
 
-    pass
+    @abstractmethod
+    async def retrieve_all(self,
+                           page: int,
+                           per_page: int,
+                           types: Optional[List[int]] = None) -> PaginatedModel[Media]:
+        raise NotImplementedError
 
 
 class IMediaPhotoRepository(IRetrieveMixin[MediaPhoto],
