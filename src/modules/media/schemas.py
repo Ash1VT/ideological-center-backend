@@ -39,6 +39,7 @@ class MediaPhotoRetrieveOutSchema(MediaPhotoBaseSchema):
 class MediaPhotoCreateOutSchema(MediaPhotoBaseSchema):
     id: int = Field(ge=0, examples=[1, 2, 3, 4, 5])
     image_url: Optional[str] = Field(max_length=255, examples=["https://example.com/image.jpg"])
+    media_id: int = Field(ge=0, examples=[1, 2, 3, 4, 5])
 
     model_config = {
         "from_attributes": True,
