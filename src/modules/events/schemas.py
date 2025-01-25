@@ -10,11 +10,11 @@ from db.sqlalchemy.models import EventType, EventApplicationStatus
 # EVENTS
 class EventBaseSchema(BaseModel):
     name: str = Field(max_length=255, examples=["Lunch", "Dinner"])
-    description: Optional[str] = Field(max_length=255, examples=["Lunch", "Dinner"])
-    short_description: Optional[str] = Field(max_length=255, examples=["Lunch", "Dinner"])
-    location: str = Field(max_length=255, examples=["123 Main St, Anytown, USA"])
-    participants: str = Field(max_length=255, examples=["John Doe, Bill Clinton"])
-    coordinator_contact: Optional[str] = Field(max_length=255, examples=["John Doe, Bill Clinton"])
+    description: Optional[str] = Field(max_length=255, examples=["Lunch", "Dinner"], default=None)
+    short_description: Optional[str] = Field(max_length=255, examples=["Lunch", "Dinner"], default=None)
+    location: Optional[str] = Field(max_length=255, examples=["123 Main St, Anytown, USA"], default=None)
+    participants: Optional[str] = Field(max_length=255, examples=["John Doe, Bill Clinton"], default=None)
+    coordinator_contact: Optional[str] = Field(max_length=255, examples=["John Doe, Bill Clinton"], default=None)
 
     start_date: datetime = Field(examples=[datetime.now()])
     end_date: datetime = Field(examples=[datetime.now()])
@@ -22,7 +22,7 @@ class EventBaseSchema(BaseModel):
 
 class EventRetrieveOutSchema(EventBaseSchema):
     id: int = Field(ge=0, examples=[1, 2, 3, 4, 5])
-    image_url: Optional[str] = Field(max_length=255, examples=["https://example.com/image.jpg"])
+    image_url: Optional[str] = Field(max_length=255, examples=["https://example.com/image.jpg"], default=None)
     created_at: datetime = Field(examples=[datetime.now()])
     status: EventType = Field(examples=[EventType.PLANNED,
                                         EventType.PASSING,
@@ -40,7 +40,7 @@ class EventCreateInSchema(EventBaseSchema):
 
 class EventCreateOutSchema(EventBaseSchema):
     id: int = Field(ge=0, examples=[1, 2, 3, 4, 5])
-    image_url: Optional[str] = Field(max_length=255, examples=["https://example.com/image.jpg"])
+    image_url: Optional[str] = Field(max_length=255, examples=["https://example.com/image.jpg"], default=None)
     created_at: datetime = Field(examples=[datetime.now()])
     status: EventType = Field(examples=[EventType.PLANNED,
                                         EventType.PASSING,
@@ -57,7 +57,7 @@ class EventUpdateInSchema(EventBaseSchema):
 
 class EventUpdateOutSchema(EventBaseSchema):
     id: int = Field(ge=0, examples=[1, 2, 3, 4, 5])
-    image_url: Optional[str] = Field(max_length=255, examples=["https://example.com/image.jpg"])
+    image_url: Optional[str] = Field(max_length=255, examples=["https://example.com/image.jpg"], default=None)
     created_at: datetime = Field(examples=[datetime.now()])
     status: EventType = Field(examples=[EventType.PLANNED,
                                         EventType.PASSING,
@@ -74,7 +74,7 @@ class EventApplicationBaseSchema(BaseModel):
     fio: str = Field(max_length=255, examples=["John Doe, Bill Clinton"])
     email: str = Field(max_length=255, examples=["Lunch", "Dinner"])
     phone: str = Field(max_length=255, examples=["Lunch", "Dinner"])
-    comment: Optional[str] = Field(max_length=255, examples=["Lunch", "Dinner"])
+    comment: Optional[str] = Field(max_length=255, examples=["Lunch", "Dinner"], default=None)
     birthdate: datetime = Field(examples=[datetime.now()])
     study_organisation: str = Field(max_length=255, examples=["Lunch", "Dinner"])
 

@@ -6,13 +6,13 @@ from pydantic import Field, BaseModel
 # MUSEUM SECTION
 class MuseumSectionBaseSchema(BaseModel):
     name: str = Field(max_length=255, examples=["Lunch", "Dinner"])
-    description: Optional[str] = Field(max_length=255, examples=["Lunch", "Dinner"])
+    description: Optional[str] = Field(max_length=255, examples=["Lunch", "Dinner"], default=None)
 
 
 class MuseumSectionRetrieveOutSchema(MuseumSectionBaseSchema):
     id: int = Field(ge=0, examples=[1, 2, 3, 4, 5])
-    image_url: Optional[str] = Field(max_length=255, examples=["https://example.com/image.jpg"])
-    hall_id: Optional[int] = Field(ge=0, examples=[1, 2, 3, 4, 5])
+    image_url: Optional[str] = Field(max_length=255, examples=["https://example.com/image.jpg"], default=None)
+    hall_id: int = Field(ge=0, examples=[1, 2, 3, 4, 5])
 
     model_config = {
         "from_attributes": True,
@@ -26,8 +26,8 @@ class MuseumSectionCreateInSchema(MuseumSectionBaseSchema):
 
 class MuseumSectionCreateOutSchema(MuseumSectionBaseSchema):
     id: int = Field(ge=0, examples=[1, 2, 3, 4, 5])
-    image_url: Optional[str] = Field(max_length=255, examples=["https://example.com/image.jpg"])
-    hall_id: Optional[int] = Field(ge=0, examples=[1, 2, 3, 4, 5])
+    image_url: Optional[str] = Field(max_length=255, examples=["https://example.com/image.jpg"], default=None)
+    hall_id: int = Field(ge=0, examples=[1, 2, 3, 4, 5])
 
     model_config = {
         "from_attributes": True,
@@ -36,13 +36,14 @@ class MuseumSectionCreateOutSchema(MuseumSectionBaseSchema):
 
 
 class MuseumSectionUpdateInSchema(MuseumSectionBaseSchema):
-    hall_id: Optional[int] = Field(ge=0, examples=[1, 2, 3, 4, 5])
+    pass
+    # hall_id: Optional[int] = Field(ge=0, examples=[1, 2, 3, 4, 5], default=None)
 
 
 class MuseumSectionUpdateOutSchema(MuseumSectionBaseSchema):
     id: int = Field(ge=0, examples=[1, 2, 3, 4, 5])
-    image_url: Optional[str] = Field(max_length=255, examples=["https://example.com/image.jpg"])
-    hall_id: Optional[int] = Field(ge=0, examples=[1, 2, 3, 4, 5])
+    image_url: Optional[str] = Field(max_length=255, examples=["https://example.com/image.jpg"], default=None)
+    hall_id: int = Field(ge=0, examples=[1, 2, 3, 4, 5])
 
     model_config = {
         "from_attributes": True,
@@ -54,12 +55,12 @@ class MuseumSectionUpdateOutSchema(MuseumSectionBaseSchema):
 
 class MuseumHallBaseSchema(BaseModel):
     name: str = Field(max_length=255, examples=["Lunch", "Dinner"])
-    description: Optional[str] = Field(max_length=255, examples=["Lunch", "Dinner"])
+    description: Optional[str] = Field(max_length=255, examples=["Lunch", "Dinner"], default=None)
 
 
 class MuseumHallRetrieveOutSchema(MuseumHallBaseSchema):
     id: int = Field(ge=0, examples=[1, 2, 3, 4, 5])
-    image_url: Optional[str] = Field(max_length=255, examples=["https://example.com/image.jpg"])
+    image_url: Optional[str] = Field(max_length=255, examples=["https://example.com/image.jpg"], default=None)
     sections: Optional[List[MuseumSectionRetrieveOutSchema]]
 
     model_config = {
@@ -74,7 +75,7 @@ class MuseumHallCreateInSchema(MuseumHallBaseSchema):
 
 class MuseumHallCreateOutSchema(MuseumHallBaseSchema):
     id: int = Field(ge=0, examples=[1, 2, 3, 4, 5])
-    image_url: Optional[str] = Field(max_length=255, examples=["https://example.com/image.jpg"])
+    image_url: Optional[str] = Field(max_length=255, examples=["https://example.com/image.jpg"], default=None)
     # sections: Optional[List[MuseumSectionCreateOutSchema]]
 
     model_config = {
@@ -89,7 +90,7 @@ class MuseumHallUpdateInSchema(MuseumHallBaseSchema):
 
 class MuseumHallUpdateOutSchema(MuseumHallBaseSchema):
     id: int = Field(ge=0, examples=[1, 2, 3, 4, 5])
-    image_url: Optional[str] = Field(max_length=255, examples=["https://example.com/image.jpg"])
+    image_url: Optional[str] = Field(max_length=255, examples=["https://example.com/image.jpg"], default=None)
     # sections: Optional[List[MuseumSectionUpdateOutSchema]]
 
     model_config = {
