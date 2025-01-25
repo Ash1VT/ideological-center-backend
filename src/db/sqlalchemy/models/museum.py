@@ -22,7 +22,7 @@ class MuseumSection(Base):
     __tablename__ = "museum_section"
 
     id = Column(Integer, primary_key=True)
-    name = Column(String(255), nullable=False)
+    name = Column(String(255), nullable=True)
     description = Column(String(255), nullable=True)
 
     image_url = Column(String(255), nullable=True)

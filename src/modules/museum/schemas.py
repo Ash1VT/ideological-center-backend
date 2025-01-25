@@ -5,7 +5,7 @@ from pydantic import Field, BaseModel
 
 # MUSEUM SECTION
 class MuseumSectionBaseSchema(BaseModel):
-    name: str = Field(max_length=255, examples=["Lunch", "Dinner"])
+    name: Optional[str] = Field(max_length=255, examples=["Lunch", "Dinner"], default=None)
     description: Optional[str] = Field(max_length=255, examples=["Lunch", "Dinner"], default=None)
 
 
