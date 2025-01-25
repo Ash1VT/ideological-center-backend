@@ -20,8 +20,8 @@ class Media(Base):
 
     id = Column(Integer, primary_key=True)
 
-    name = Column(String(255), nullable=False)
-    description = Column(String(255), nullable=True)
+    name = Column(String(500), nullable=False)
+    description = Column(String(2000), nullable=True)
 
     image_url = Column(String(255), nullable=True)
 

@@ -18,13 +18,13 @@ class Event(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String(255), nullable=False)
-    description = Column(String(255), nullable=True)
-    short_description = Column(String(255), nullable=True)
+    description = Column(String(2000), nullable=True)
+    short_description = Column(String(500), nullable=True)
     image_url = Column(String(255), nullable=True)
 
-    location = Column(String(255), nullable=True)
-    participants = Column(String(255), nullable=True)
-    coordinator_contact = Column(String(255), nullable=True)
+    location = Column(String(1000), nullable=True)
+    participants = Column(String(1000), nullable=True)
+    coordinator_contact = Column(String(1000), nullable=True)
     created_at = Column(Date(), default=datetime.now, nullable=False)
     start_date = Column(Date(), nullable=False)
     end_date = Column(Date(), nullable=False)

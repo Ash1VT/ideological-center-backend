@@ -10,11 +10,11 @@ from db.sqlalchemy.models import EventType, EventApplicationStatus
 # EVENTS
 class EventBaseSchema(BaseModel):
     name: str = Field(max_length=255, examples=["Lunch", "Dinner"])
-    description: Optional[str] = Field(max_length=255, examples=["Lunch", "Dinner"], default=None)
-    short_description: Optional[str] = Field(max_length=255, examples=["Lunch", "Dinner"], default=None)
-    location: Optional[str] = Field(max_length=255, examples=["123 Main St, Anytown, USA"], default=None)
-    participants: Optional[str] = Field(max_length=255, examples=["John Doe, Bill Clinton"], default=None)
-    coordinator_contact: Optional[str] = Field(max_length=255, examples=["John Doe, Bill Clinton"], default=None)
+    description: Optional[str] = Field(max_length=2000, examples=["Lunch", "Dinner"], default=None)
+    short_description: Optional[str] = Field(max_length=500, examples=["Lunch", "Dinner"], default=None)
+    location: Optional[str] = Field(max_length=1000, examples=["123 Main St, Anytown, USA"], default=None)
+    participants: Optional[str] = Field(max_length=1000, examples=["John Doe, Bill Clinton"], default=None)
+    coordinator_contact: Optional[str] = Field(max_length=1000, examples=["John Doe, Bill Clinton"], default=None)
 
     start_date: datetime = Field(examples=[datetime.now()])
     end_date: datetime = Field(examples=[datetime.now()])

@@ -50,8 +50,8 @@ class MediaPhotoCreateOutSchema(MediaPhotoBaseSchema):
 # MEDIA
 
 class MediaBaseSchema(BaseModel):
-    name: str = Field(max_length=255, examples=["Lunch", "Dinner"])
-    description: Optional[str] = Field(max_length=255, examples=["Lunch", "Dinner"], default=None)
+    name: str = Field(max_length=500, examples=["Lunch", "Dinner"])
+    description: Optional[str] = Field(max_length=2000, examples=["Lunch", "Dinner"], default=None)
     type: MediaType = Field(examples=[MediaType.METHOD_DOC,
                                       MediaType.NORM_DOC,
                                       MediaType.STUDY_MATERIAL,
