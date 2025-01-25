@@ -139,10 +139,10 @@ class MuseumSectionService(RetrieveMixin[MuseumSection, MuseumSectionRetrieveOut
         if not instance:
             raise MuseumSectionNotFoundError(id=id)
 
-        hall_instance = await uow.museum_hall.retrieve(id=item.hall_id)
-
-        if not hall_instance:
-            raise MuseumHallNotFoundError(id=item.hall_id)
+        # hall_instance = await uow.museum_hall.retrieve(id=item.hall_id)
+        #
+        # if not hall_instance:
+        #     raise MuseumHallNotFoundError(id=item.hall_id)
 
         data = item.model_dump()
         return await uow.museum_section.update(id=id, data=data)
