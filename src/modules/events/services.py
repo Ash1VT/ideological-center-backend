@@ -21,7 +21,7 @@ from modules.events.utils.firebase import upload_event_image_to_firebase
 
 
 class EventService(RetrieveMixin[Event, EventRetrieveOutSchema],
-                   RetrieveAllMixin[Event, EventRetrieveOutSchema],
+                   # RetrieveAllMixin[Event, EventRetrieveOutSchema],
                    CreateMixin[Event, EventCreateInSchema, EventCreateOutSchema],
                    UpdateMixin[Event, EventUpdateInSchema, EventUpdateOutSchema],
                    DeleteMixin[Event]):
@@ -42,8 +42,11 @@ class EventService(RetrieveMixin[Event, EventRetrieveOutSchema],
                                      page: int,
                                      per_page: int,
                                      uow: GenericUnitOfWork,
+                                     name_contains: Optional[str] = None,
+                                     start_dt: Optional[datetime.date] = None,
+                                     end_dt: Optional[datetime.date] = None,
                                      **kwargs) -> PaginatedModel[Event]:
-        return await uow.events.retrieve_all(page=page, per_page=per_page)
+        return await uow.events.retrieve_all(page=page, per_page=per_page, name_contains=name_contains, start_dt=start_dt, end_dt=end_dt)
 
     async def create_instance(self, item: EventCreateInSchema, uow: GenericUnitOfWork, **kwargs) -> Event:
         data = item.model_dump()
@@ -61,6 +64,23 @@ class EventService(RetrieveMixin[Event, EventRetrieveOutSchema],
 
         await uow.events.delete(id=id)
 
+    async def retrieve_all(self,
+                           page: int,
+                           per_page: int,
+                           uow: GenericUnitOfWork,
+                           name_contains: Optional[str] = None,
+                           start_dt: Optional[datetime.date] = None,
+                           end_dt: Optional[datetime.date] = None,
+                           ) -> PaginatedOut[EventRetrieveOutSchema]:
+        paginated_model = await self.retrieve_all_instances(page=page,
+                                                            per_page=per_page,
+                                                            uow=uow,
+                                                            name_contains=name_contains,
+                                                            start_dt=start_dt,
+                                                            end_dt=end_dt)
+
+        return self.schema_paginated_out.model_validate(asdict(paginated_model))
+
     async def upload_image(self, id: int, image: UploadFile, uow: GenericUnitOfWork, **kwargs) -> EventUpdateOutSchema:
         instance = await uow.events.retrieve(id=id)
 
@@ -76,6 +96,7 @@ class EventService(RetrieveMixin[Event, EventRetrieveOutSchema],
         logger.info(f"Uploaded image for event with id={id}.")
 
         return self.schema_update_out.model_validate(updated_instance)
+
 
 
 class EventApplicationService(RetrieveMixin[EventApplication, EventApplicationRetrieveOutSchema],

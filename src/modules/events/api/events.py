@@ -1,3 +1,4 @@
+import datetime
 from typing import Optional, List
 
 from fastapi import APIRouter, Query, Depends, UploadFile, File, HTTPException
@@ -21,9 +22,17 @@ events_router = APIRouter(prefix="/events", tags=["events"])
 @handle_app_errors
 async def retrieve_all(page: int = Query(None),
                        per_page: int = Query(None),
+                       name_contains: Optional[str] = Query(None),
+                       start_dt: Optional[datetime.date] = Query(None),
+                       end_dt: Optional[datetime.date] = Query(None),
                        service: EventService = Depends(get_event_service),
                        uow: GenericUnitOfWork = Depends(get_uow)):
-    return await service.retrieve_all(page=page, per_page=per_page, uow=uow)
+    return await service.retrieve_all(page=page,
+                                      per_page=per_page,
+                                      name_contains=name_contains,
+                                      start_dt=start_dt,
+                                      end_dt=end_dt,
+                                      uow=uow)
 
 
 @events_router.get("/{id}", response_model=EventRetrieveOutSchema)
