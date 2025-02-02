@@ -31,9 +31,9 @@ class Event(Base):
 
     @hybrid_property
     def status(self):
-        if self.created_at < self.start_date:
+        if datetime.now() < self.start_date:
             return EventType.PLANNED
-        if self.start_date <= self.created_at < self.end_date:
+        if self.start_date <= datetime.now() < self.end_date:
             return EventType.PASSING
 
         return EventType.PASSED
@@ -41,7 +41,7 @@ class Event(Base):
     @status.expression
     def status(cls):
         return case(
-            (cls.created_at < cls.start_date, EventType.PLANNED),
-            (and_(cls.start_date <= cls.created_at, cls.created_at < cls.end_date), EventType.PASSING),
+            (datetime.now() < cls.start_date, EventType.PLANNED),
+            (and_(cls.start_date <= datetime.now(), datetime.now() < cls.end_date), EventType.PASSING),
             else_=EventType.PASSED,
         )
