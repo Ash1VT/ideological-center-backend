@@ -29,4 +29,5 @@ class SQLAlchemyPaginator[Model](BasePaginator):
         return [instance for instance in await self._session.scalars(self._query.limit(self._limit).offset(self._offset))]
 
     async def _get_total_count(self) -> int:
-        return await self._session.scalar(select(func.count()).select_from(self._query.subquery()))
+        stmt = select(self._query.selected_columns)
+        return await self._session.scalar(select(func.count()).select_from(stmt))
