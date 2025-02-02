@@ -1,5 +1,5 @@
 import enum
-from datetime import datetime
+from datetime import datetime, date
 
 from sqlalchemy import Column, Integer, String, Date, Enum, case, and_
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -31,9 +31,9 @@ class Event(Base):
 
     @hybrid_property
     def status(self):
-        if datetime.now() < self.start_date:
+        if datetime.now().date() < self.start_date:
             return EventType.PLANNED
-        if self.start_date <= datetime.now() < self.end_date:
+        if self.start_date <= datetime.now().date() < self.end_date:
             return EventType.PASSING
 
         return EventType.PASSED
@@ -41,7 +41,7 @@ class Event(Base):
     @status.expression
     def status(cls):
         return case(
-            (datetime.now() < cls.start_date, EventType.PLANNED),
-            (and_(cls.start_date <= datetime.now(), datetime.now() < cls.end_date), EventType.PASSING),
+            (datetime.now().date() < cls.start_date, EventType.PLANNED),
+            (and_(cls.start_date <= datetime.now().date(), datetime.now().date() < cls.end_date), EventType.PASSING),
             else_=EventType.PASSED,
         )
