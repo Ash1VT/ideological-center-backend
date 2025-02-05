@@ -6,7 +6,7 @@ from setup.app.routes import register_routes
 from setup.app.run import start_app
 from setup.settings.app import get_app_settings
 
-app = FastAPI(title="Resource Center", lifespan=lifespan)
+app = FastAPI(title="Resource Center", lifespan=lifespan, root_path='/server')
 api_router = APIRouter(prefix="/api/v1")
 settings = get_app_settings()
 
