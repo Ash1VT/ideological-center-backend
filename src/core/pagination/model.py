@@ -8,4 +8,5 @@ class PaginatedModel[Model]:
     per_page: int
     number_of_pages: int
     total_count: int
+    total_filtered_count: int
     items: List[Model]

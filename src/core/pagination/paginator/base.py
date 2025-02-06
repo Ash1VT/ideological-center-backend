@@ -23,6 +23,10 @@ class BasePaginator[Model](ABC):
     async def _get_total_count(self) -> int:
         raise NotImplementedError
 
+    @abstractmethod
+    async def _get_total_filtered_count(self) -> int:
+        raise NotImplementedError
+
     def _get_number_of_pages(self, count: int) -> int:
         if not self._per_page:
             return 1

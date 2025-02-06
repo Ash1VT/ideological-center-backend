@@ -16,12 +16,14 @@ class SQLAlchemyPaginator[Model](BasePaginator):
 
     async def get_response(self) -> PaginatedModel[Model]:
         total_count = await self._get_total_count()
+        total_filtered_count = await self._get_total_filtered_count()
 
         return PaginatedModel[Model](
             page=self._page if self._page else 1,
-            per_page=self._per_page if self._per_page else total_count,
-            number_of_pages=self._get_number_of_pages(total_count),
+            per_page=self._per_page if self._per_page else total_filtered_count,
+            number_of_pages=self._get_number_of_pages(total_filtered_count),
             total_count=total_count,
+            total_filtered_count=total_filtered_count,
             items=await self.get_items(),
         )
 
@@ -31,3 +33,6 @@ class SQLAlchemyPaginator[Model](BasePaginator):
     async def _get_total_count(self) -> int:
         stmt = select(self._query.selected_columns)
         return await self._session.scalar(select(func.count()).select_from(stmt))
+
+    async def _get_total_filtered_count(self) -> int:
+        return await self._session.scalar(select(func.count()).select_from(self._query.subquery()))
