@@ -29,7 +29,7 @@ class SQLAlchemyEventsRepository(SQLAlchemyRepository[Event], IEventsRepository)
             stmt = stmt.where(Event.start_date >= start_dt)
 
         if end_dt:
-            stmt = stmt.where(Event.end_date <= end_dt)
+            stmt = stmt.where(Event.start_date <= end_dt)
 
         stmt = stmt.order_by(Event.start_date.desc())
 
